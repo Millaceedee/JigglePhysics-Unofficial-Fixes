@@ -17,3 +17,9 @@ Unofficial memory leak fixes and warning cleanups for [JigglePhysics](https://gi
 
 1. Place `JigglePhysicsEditorCleanup.cs` anywhere in your Unity project (e.g., inside your `Assets/` folder). It uses `#if UNITY_EDITOR`, so it automatically stays out of final builds. 
 2. Apply the package updates directly to `Packages/com.gator-dragon-games.jigglephysics`. 
+
+---
+
+## ⚠️ Disclaimer
+
+*These workarounds are relatively untested and meant as a temporary solution for the editor. Use them at your own risk, and always back up your project first!*
