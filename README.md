@@ -1,4 +1,4 @@
-# JigglePhysics Unofficial Fixes 🎮✨
+# JigglePhysics Unofficial Fixes
 
 Unofficial memory leak fixes and warning cleanups for [JigglePhysics](https://github.com/naelstrof/JigglePhysics). 
 
