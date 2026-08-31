@@ -1,5 +1,6 @@
 # JigglePhysics Unofficial Editor Cleanup
-Unofficial editor memory leak fix for [JigglePhysics](https://github.com/naelstrof/JigglePhysics) (compatible with v16.0.1+). 
+
+Unofficial editor memory leak fix for [JigglePhysics](https://github.com/naelstrof/JigglePhysics) (compatible with v16.0.1+).
 
 ---
 
@@ -20,6 +21,30 @@ With Domain Reload disabled, the static `jobs` field — and everything it holds
 This also explains why some users reported the leak appearing "sometimes, not always": it depends entirely on whether a component with that exact `OnApplicationQuit` call happens to be present and active in the scene when Play mode stops. Any custom setup without it will leak every time.
 
 The fix in this repo (`JigglePhysicsEditorCleanup.cs`) stops relying on any particular MonoBehaviour being present, and instead hooks the cleanup directly into the Editor's play-mode lifecycle via `EditorApplication.playModeStateChanged`, so disposal always happens on exiting Play mode regardless of what's in the scene.
+
+---
+
+## 🧹 Compiler Warning Cleanup
+
+While debugging the memory leak, also cleaned up three harmless but noisy build warnings that show up in the Console:
+
+* **CS0660 / CS0661** in `JiggleTreeJobData.cs` — the struct defined `operator ==`/`!=` but never overrode `Object.Equals(object)` / `Object.GetHashCode()`. Added both overrides (plus a typed `Equals(JiggleTreeJobData other)`), comparing all fields including the raw `points`/`parameters` pointers, so `==` semantics are unchanged.
+* **CS0414** in `JigglePhysics.cs` — the `accumulator` field was assigned in `Initialize()` but never read anywhere. Removed it.
+* **CS0414** in `JiggleMemoryBus.cs` — the `hasWrittenData` field was declared and initialized but never read anywhere. Removed it.
+
+None of these change runtime behavior — they're purely dead code removal / missing boilerplate.
+
+### Additional: applying the warning fixes
+
+If you want these three warnings gone in your own project too, apply the same changes directly inside:
+
+```
+Packages/com.gator-dragon-games.jigglephysics/Scripts/JiggleTreeJobData.cs
+Packages/com.gator-dragon-games.jigglephysics/Scripts/JigglePhysics.cs
+Packages/com.gator-dragon-games.jigglephysics/Scripts/JiggleMemoryBus.cs
+```
+
+⚠️ **Reminder:** these are edits to files inside the JigglePhysics package itself, not to a separate add-on script like `JigglePhysicsEditorCleanup.cs`. If you ever update the JigglePhysics example/package to a newer version, these three files will be **overwritten and your fixes will be lost**. Always back up your modified copies (or keep a diff/patch) before updating the package.
 
 ---
 
